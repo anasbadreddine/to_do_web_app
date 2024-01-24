@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #todo-container {
+            width: 300px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 8px;
+        }
+
+        button {
+            padding: 8px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div id="todo-container">
+        <h2>To-Do App</h2>
+        <input type="text" id="taskInput" placeholder="Add a new task">
+        <ul id="taskList"></ul>
+        <button onclick="addTask()">Add Task</button>
+        <button onclick="clearTasks()">Clear Completed</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            loadTasks();
+        });
+
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const taskList = document.getElementById('taskList');
+            
+            if (taskInput.value.trim() !== '') {
+                const taskText = taskInput.value.trim();
+
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span>${taskText}</span>
+                    <button onclick="completeTask(this)">Complete</button>
+                    <button onclick="deleteTask(this)">Delete</button>
+                `;
+
+                taskList.appendChild(li);
+                saveTasks();
+                taskInput.value = '';
+            }
+        }
+
+        function completeTask(button) {
+            const taskText = button.previousElementSibling.innerText;
+            button.previousElementSibling.classList.toggle('completed');
+            saveTasks();
+        }
+
+        function deleteTask(button) {
+            const taskList = document.getElementById('taskList');
+            const li = button.parentElement;
+            taskList.removeChild(li);
+            saveTasks();
+        }
+
+        function clearTasks() {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '';
+            saveTasks();
+        }
+
+        function saveTasks() {
+            const taskList = document.getElementById('taskList').innerHTML;
+            localStorage.setItem('tasks', taskList);
+        }
+
+        function loadTasks() {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = localStorage.getItem('tasks') || '';
+        }
+    </script>
+</body>
+</html>
